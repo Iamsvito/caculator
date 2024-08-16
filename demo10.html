@@ -1,59 +1,188 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <!-- Use Unicode -->
-        <meta charset="UTF-8" />
-        <title>calculate</title>
-        <script type="module">
-            // 選取要處理的元素
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <title>計算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .result {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        @media (min-width: 600px) {
+            .form-group {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .form-group label {
+                flex: 1;
+                margin-bottom: 0;
+            }
+
+            .form-group input {
+                flex: 2;
+            }
+        }
+
+        @media (min-width: 800px) {
+            .container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .container > div {
+                border: 1px solid #ccc;
+                padding: 20px;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+            .result {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>計算器</h1>
+
+    <div class="container">
+        <div>
+            <h2>分數計算</h2>
+            <form id="scores-form">
+                <div class="form-group">
+                    <label for="scores-string">請輸入分數列表，以半形逗號隔開：</label>
+                    <input id="scores-string" type="text" placeholder="例如 &quot;69,78,87,3993&quot;" />
+                </div>
+            </form>
+            <div class="result">
+                總分是：<span id="score-sum"></span><br />
+                平均分數是：<span id="score-average"></span><br />
+                最大分數是：<span id="score-max"></span><br />
+                最小分數是：<span id="score-min"></span>
+            </div>
+        </div>
+
+        <div>
+            <h2>連續計算</h2>
+            <form id="continuous-calc-form">
+                <div class="form-group">
+                    <label for="expression">請輸入計算表達式：</label>
+                    <input id="expression" type="text" placeholder="例如 9*(10/100)**2+(-1)" />
+                </div>
+            </form>
+            <div class="result">
+                計算結果：<span id="expression-result"></span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        document.addEventListener("DOMContentLoaded", function() {
             let scoresStringInput = document.querySelector("#scores-string");
-            let scoreSumSpan = document.querySelector("#score-sum")/* TODO：id 是 score-sum */; 
-            let scoreAverageSpan = document.querySelector("#score-average")/* TODO：id 是 score-average */;
+            let scoreSumSpan = document.querySelector("#score-sum");
+            let scoreAverageSpan = document.querySelector("#score-average");
+            let scoreMaxSpan = document.querySelector("#score-max");
+            let scoreMinSpan = document.querySelector("#score-min");
+
+            let expressionInput = document.querySelector("#expression");
+            let expressionResultSpan = document.querySelector("#expression-result");
 
             // 計算分數，並顯示在網頁上
             const updateScoreResults = function() {
-                // 取得使用者輸入的分數字串，以半形逗號隔開
-                let scoresString = scoresStringInput.value/* TODO */;
-
-                // 從逗號處，分開每個分數
+                let scoresString = scoresStringInput.value;
                 let scoreStringArray = scoresString.split(",");
-
-                // 因為輸入的東西是字串，所以要一一轉成數字
-                // 然後放進新的陣列的末端
                 let scoreArray = [];
                 for(let scoreString of scoreStringArray) {
                     let score = parseFloat(scoreString);
-                    scoreArray.push(score);
+                    if (!isNaN(score)) {
+                        scoreArray.push(score);
+                    }
                 }
 
-                // 開始計算總和
-                let scoreSum = 0;
-                for(let score of scoreArray) {
-                    scoreSum = scoreSum + score;
+                if (scoreArray.length === 0) {
+                    scoreSumSpan.textContent = "0 分";
+                    scoreAverageSpan.textContent = "0 分";
+                    scoreMaxSpan.textContent = "N/A";
+                    scoreMinSpan.textContent = "N/A";
+                    return;
                 }
 
-                // 印出總和
+                let scoreSum = scoreArray.reduce((sum, score) => sum + score, 0);
                 scoreSumSpan.textContent = `${scoreSum} 分`;
 
-                // 計算平均分數
-                let scoreAverage = scoreSum / scoreStringArray.length;
+                let scoreAverage = scoreSum / scoreArray.length;
+                scoreAverageSpan.textContent = `${scoreAverage.toFixed(2)} 分`;
 
-                // 印出平均分數
-                scoreAverageSpan.textContent/* TODO */ = `${scoreAverage} 分`/* TODO */;
+                let scoreMax = Math.max(...scoreArray);
+                let scoreMin = Math.min(...scoreArray);
+                scoreMaxSpan.textContent = `${scoreMax} 分`;
+                scoreMinSpan.textContent = `${scoreMin} 分`;
             };
 
-            // 一旦使用者輸入，就更新分數
+            // 計算表達式並顯示結果
+            const updateExpressionResult = function() {
+                let expression = expressionInput.value;
+
+                try {
+                    // 使用 eval 計算結果
+                    let result = eval(expression);
+                    expressionResultSpan.textContent = `${result}`;
+                } catch (e) {
+                    expressionResultSpan.textContent = "無效的表達式";
+                }
+            };
+
+            // 一旦使用者輸入，就更新分數和計算結果
             scoresStringInput.addEventListener("input", updateScoreResults);
-        </script>
-    </head>
-    <body>
-        <form>
-            <label>請輸入分數列表，以半形逗號隔開：<input id="scores-string" placeholder="e.g. &quot;80,75,95,40&quot;" /></label>
-        </form>
-        <div>
-            總分是：<span id="score-sum"></span><br />
-            平均分數是：<span id="score-average"></span>
-            
-        </div>
-    </body>
+            expressionInput.addEventListener("input", updateExpressionResult);
+        });
+    </script>
+</body>
 </html>
+
+
