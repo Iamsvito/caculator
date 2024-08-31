@@ -17,13 +17,13 @@
 <meta property="og:description" content="這是一個簡單的線上計算器，提供分數總和、平均、最大和最小值計算。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://iamsvito.github.io/demo/demo10.html">
-<meta property="og:image" content="https://i.ibb.co/Wy6nLsV/2024-08-30-231047.jpg"> <!-- 修正的圖片URL -->
+<meta property="og:image" content="https://ibb.co/gT3yx64"> <!-- 修正的圖片URL -->
 
 <!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="計算器 - 線上分數與表達式計算工具">
 <meta name="twitter:description" content="這是一個簡單的線上計算器，提供分數總和、平均、最大和最小值計算。">
-<meta name="twitter:image" content="https://i.ibb.co/Wy6nLsV/2024-08-30-231047.jpg"> <!-- 修正的圖片URL -->
+<meta name="twitter:image" content="https://ibb.co/gT3yx64"> <!-- 修正的圖片URL -->
 
 <!-- Additional SEO Best Practices -->
 <link rel="stylesheet" href="styles.css">
@@ -335,7 +335,7 @@
         </div>
     </div>
     <div id="popup-overlay" class="popup-overlay" style="display:none;"></div>
-
+    <button onclick="resetPage()" style="display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px;">重製</button>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
     // 处理 π 的通用替换函数
@@ -375,7 +375,6 @@
         scoreMedianSpan.textContent = median;
         scoreVarianceSpan.textContent = variance.toFixed(2);
     };
-
     const copyScoresResult = function () {
         const result = `總分：${scoreSumSpan.textContent}\n平均分數：${scoreAverageSpan.textContent}\n最大分數：${scoreMaxSpan.textContent}\n最小分數：${scoreMinSpan.textContent}\n個數：${scoreCountSpan.textContent}\n中位數：${scoreMedianSpan.textContent}\n變異數：${scoreVarianceSpan.textContent}`;
 
@@ -439,21 +438,23 @@
     let logResultSpan = document.querySelector("#log-result");
 
     const calculateLog = function () {
-        // 替换 pi 或 π
-        let base = replacePi(logBaseInput.value);
-        let value = replacePi(logValueInput.value);
+    // 替换 pi 或 π
+    let base = replacePi(logBaseInput.value);
+    let value = replacePi(logValueInput.value);
 
-        // 将字符串转换为浮点数进行计算
-        let baseNum = parseFloat(base);
-        let valueNum = parseFloat(value);
+    // 将字符串转换为浮点数进行计算
+    let baseNum = parseFloat(base);
+    let valueNum = parseFloat(value);
 
-        if (!isNaN(baseNum) && !isNaN(valueNum) && baseNum > 0 && valueNum > 0) {
-            let result = Math.log(valueNum) / Math.log(baseNum);
-            logResultSpan.textContent = result.toFixed(4);
-        } else {
-            logResultSpan.textContent = "無效的輸入";
-        }
-    };
+    if (baseNum === 1 && valueNum === 1) {
+        logResultSpan.textContent = "1 的任何次方都等於 1,因此log(1,1)是未定义的";
+    } else if (!isNaN(baseNum) && !isNaN(valueNum) && baseNum > 0 && valueNum > 0) {
+        let result = Math.log(valueNum) / Math.log(baseNum);
+        logResultSpan.textContent = result.toFixed(4);
+    } else {
+        logResultSpan.textContent = "無效的輸入";
+    }
+};
 
     logBaseInput.addEventListener("input", calculateLog);
     logValueInput.addEventListener("input", calculateLog);
@@ -570,7 +571,9 @@ function closePopup() {
     document.getElementById("popup").style.display = "none";
     document.getElementById("popup-overlay").style.display = "none";
 }
-
+function resetPage() {
+            location.reload();
+        }
     </script>
 </body>
 </html>
