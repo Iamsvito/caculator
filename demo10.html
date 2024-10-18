@@ -92,8 +92,9 @@
             max-width: 500px;
             z-index: 1000;
             background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* 默認隱藏 */
         }
-
+        
         .popup-content {
             max-height: 70vh;
             overflow-y: auto;
@@ -231,6 +232,10 @@
     </header>
     <main class="container">
         <section>
+            <h3 style="color: blue;">
+                *圓周率: π 或 Pi 或 pi<br>
+                *歐拉常數: e
+            </h3>
             <h2>分數計算</h2>
             <form id="scores-form">
                 <div class="form-group">
@@ -251,7 +256,6 @@
             <button id="scores-copy-button" class="copy-button">複製結果</button>
             <span id="scores-copy-message" style="display:none; color:green;">已複製!</span>
         </section>
-
         <section>
             <h2>連續計算</h2>
             <form id="continuous-calc-form">
@@ -266,10 +270,11 @@
             <button id="expression-copy-button" class="copy-button">複製結果</button>
             <span id="expression-copy-message" style="display:none; color:green;">已複製!</span>
         </section>
-        <button class="popup-button" onclick="showPopup()">顯示運算子使用方法</button>
-
         <section>
-            <h2>Log 計算對數: log(x, base)</h2>
+            <button class="popup-button" onclick="showPopup()">顯示連續計算的運算子使用方法</button>
+        </section>
+        <section>
+            <h2>Log 計算對數: logx(base)</h2>
             <form id="log-calc-form">
                 <div class="form-group">
                     <label for="log-base">請輸入底數x：</label>
@@ -289,7 +294,7 @@
 
         <div>
             <h2>三角函數計算</h2>
-            <select id="trig-function">
+            <select id="trig-function" title="選擇三角函數">
                 <option value="sin">sin</option>
                 <option value="cos">cos</option>
                 <option value="tan">tan</option>
@@ -298,48 +303,96 @@
                 <option value="cot">cot</option>
             </select>
             <input type="text" id="angle-input" placeholder="輸入角度或弧度">
-            <select id="angle-unit">
+            <select id="angle-unit" title="選擇角度單位">
                 <option value="degree">度度量</option>
                 <option value="radian">弧度量</option>
             </select>
             <p>結果：<span id="trig-result">0</span></p>
             <button class="copy-button" id="copy-button">複製結果</button>
             <span id="copy-message" style="display:none;">已複製!</span>
-        </div>       
+        </div>  
+        <div id="popup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <h2 class="popup-header">運算子使用方法</h2>
+                <div id="popup-page-1" class="popup-page">
+                    <ul>
+                        <li>加法: +</li>
+                        <li>減法: -</li>
+                        <li>乘法: *</li>
+                        <li>除法: /</li>
+                        <li>整除: //</li>
+                        <li>餘數: %</li>
+                        <li>次方: **</li>
+                        <li>括號: ()</li>
+                        <li>絕對值: abs()</li>
+                        <li>圓周率: π 或 Pi 或 pi</li>
+                        <li>歐拉常數: e</li>
+                        <li><strong style="color:blue;">當使用 // 時，記得運算子前後要加空格</strong></li>
+                        <li><strong style="color:blue;">推薦使用英文輸入法，較不會有半全形問題</strong></li>
+                    </ul>
+                </div>
+                <div id="popup-page-2" class="popup-page" style="display:none;">
+                    <ul>
+                        <li>Math.E: 自然對數的底數，約為 2.71828。</li>
+                        <li>Math.SQRT2: 2 的平方根，約為 1.41421。</li>
+                        <li>Math.SQRT1_2: 1/2 的平方根，約為 0.70711。</li>
+                        <li>Math.LN2: 2 的自然對數，約為 0.69315。</li>
+                        <li>Math.LN10: 10 的自然對數，約為 2.30258。</li>
+                        <li>Math.LOG2E: 以 2 為底的 e 的對數，約為 1.44269。</li>
+                        <li>Math.LOG10E: 以 10 為底的 e 的對數，約為 0.43429。</li>
+                        <li>Math.ceil(x)：返回大於或等於 x 的最小整數。</li>
+                        <li>Math.floor(x)：返回小於或等於 x 的最大整數。</li>
+                        <li>Math.round(x)：四捨五入 x。</li>
+                        <li>Math.random()：返回介於 0（包含）和 1（不包含）之間的隨機數。</li>
+                        <li>Math.sqrt(x)：返回 x 的平方根。</li>
+                        <li>Math.log(x)：返回 x 的自然對數。</li>
+                        <li>Math.log10(x)：返回 x 的以 10 為底的對數。</li>
+                        <li>Math.log2(x)：返回 x 的以 2 為底的對數。</li>
+                        <li>Math.sin(x)：返回 x 的正弦（x 為弧度）。</li>
+                        <li>Math.cos(x)：返回 x 的餘弦（x 為弧度）。</li>
+                        <li>Math.tan(x)：返回 x 的正切（x 為弧度）。</li>
+                        <li>Math.min(value1, value2, ..., valueN)：返回最小值。</li>
+                        <li>Math.max(value1, value2, ..., valueN)：返回最大值。</li>
+                        <li>Math.pow(base, exponent)：返回 base 的 exponent 次方。</li>
+                    </ul>
+                </div>
+                <div id="popup-page-3" class="popup-page" style="display:none;">
+                    <ul>
+                        <li>Number.MAX_VALUE: JavaScript 能夠表示的最大數值，約為 1.7976931348623157e+308。</li>
+                        <li>Number.MIN_VALUE: JavaScript 能夠表示的最小正數，約為 5e-324。</li>
+                        <li>Number.MAX_SAFE_INTEGER: JavaScript 中最大的安全整數，2**53-1，值為 9007199254740991。</li>
+                        <li>Number.MIN_SAFE_INTEGER: JavaScript 中最小的安全整數，-2**53+1，值為 -9007199254740991。</li>
+                        <li>Number.NaN: 代表不是一個數字(Not-a-Number)。</li>
+                        <li>Number.POSITIVE_INFINITY: 表示正無窮大。</li>
+                        <li>Number.NEGATIVE_INFINITY: 表示負無窮大。</li>  
+                    </ul>
+                </div>
+                <div id="popup-page-4" class="popup-page" style="display:none;">
+                    <ul>
+                        <li>邏輯「或」: ||</li>
+                        <li>邏輯「和」: &&</li>
+                        <li>邏輯非(NOT): !</li>
+                        <li>大於或等於: >=</li>
+                        <li>小於或等於: <=</li>
+                        <li>大於: ></li>
+                        <li>少於: <</li>
+                        <li>不等於: !=</li>
+                        <li>等於: ==</li>
+                        <li>typeof: 返回變數的類型</li>
+                        <li>instanceof: 檢查一個對象是否是另一個對象</li>
+                    </ul>
+                </div>
+                <button id="prevPage" onclick="prevPage()">上一頁</button>
+                <button id="nextPage" onclick="nextPage()">下一頁</button>
+                <button class="close-popup" onclick="closePopup()">關閉</button>
+            </div>
+        </div>    
     </main>
     <footer>
         <p>&copy; 快樂又開心的計算機</p>
     </footer>
 
-    <div id="popup" class="popup" style="display:none;">
-        <div class="popup-content">
-            <h2 class="popup-header">運算子使用方法</h2>
-            <ul>
-                <li>加法: +</li>
-                <li>減法: -</li>
-                <li>乘法: *</li>
-                <li>除法: /</li>
-                <li>整除: //</li>
-                <li>餘數: %</li>
-                <li>次方: **</li>
-                <li>括號: ()</li>
-                <li>絕對值: abs()</li>
-                <li>圓周率: π 或 Pi 或 pi</li>
-                <li>邏輯「或」: ||</li>
-                <li>邏輯「和」: &&</li>
-                <li>大於或等於: >=</li>
-                <li>小於或等於: <=</li>
-                <li>大於: ></li>
-                <li>少於: <</li>
-                <li>不等於: !=</li>
-                <li>等於: ==</li>
-                <li><strong style="color:blue;">當使用 // 時，記得運算子前後要加空格</strong></li>
-                <li><strong style="color:blue;">推薦使用英文輸入法，較不會有半全形問題</strong></li>
-            </ul>
-            <button class="close-popup" onclick="closePopup()">關閉</button>
-        </div>
-    </div>
-    <div id="popup-overlay" class="popup-overlay" style="display:none;"></div>
+    
     <button onclick="resetPage()" style="display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px;">重製</button>
     
     <script>
@@ -361,11 +414,16 @@
 
             const calculateScores = function () {
                 // 替換 π 為 Math.PI 並進行計算
-                let scores = replacePi(scoresInput.value).split(',').map(Number).filter(n => !isNaN(n));
-                if (scores.length === 0) {
-                    console.error('無效的輸入，請重新輸入分數');
-                    return;
-                }
+                let scores = replacePi(scoresInput.value)
+                    .replace(/\be\b/g, Math.E)  // 將 e 替換為 Math.E 的數值
+                    .split(',')
+                    .map(str => parseFloat(str))  // 將字符串轉換為浮點數
+                    .filter(n => !isNaN(n));      // 過濾掉無效的數字
+
+            if (scores.length === 0) {
+                console.error('無效的輸入，請重新輸入分數');
+                return;
+    }
                 let sum = scores.reduce((a, b) => a + b, 0);
                 let average = sum / scores.length;
                 let max = Math.max(...scores);
@@ -409,7 +467,7 @@
             let expressionResultSpan = document.querySelector("#expression-result");
 
             const calculateExpression = function () {
-                let expression = replacePi(expressionInput.value);
+                let expression = replacePi(expressionInput.value).replace(/\be\b/g, "Math.E");
 
                 try {
                     let modifiedExpression = expression.replace(/abs\(([^)]+)\)/g, "Math.abs($1)");
@@ -445,8 +503,8 @@
             let logResultSpan = document.querySelector("#log-result");
 
             const calculateLog = function () {
-                let base = replacePi(logBaseInput.value);
-                let value = replacePi(logValueInput.value);
+                let base = replacePi(logBaseInput.value).replace(/\be\b/g, Math.E);   // 將 e 替換為 Math.E 的數值
+                let value = replacePi(logValueInput.value).replace(/\be\b/g, Math.E); // 將 e 替換為 Math.E 的數值
 
                 let baseNum = parseFloat(base);
                 let valueNum = parseFloat(value);
@@ -493,7 +551,7 @@
 
             const calculateTrigonometry = function () {
                 let functionSelect = trigFunctionSelect.value;
-                let angleInputValue = angleInput.value;
+                let angleInputValue = angleInput.value.replace(/\be\b/g, "Math.E"); // 支援 e
                 let unit = angleUnitSelect.value;
 
                 let angle = safeEval(angleInputValue);
@@ -572,16 +630,44 @@
                 });
             });
         });
+        let currentPage = 0;
+    const pages = document.querySelectorAll('.popup-page');
 
-        function showPopup() {
-            document.getElementById("popup").style.display = "block";
-            document.getElementById("popup-overlay").style.display = "block";
-        }
+    function showPopup() {
+        // 顯示彈出視窗
+        document.getElementById('popup').style.display = 'block';
+        // 初始化為第一頁
+        currentPage = 0;
+        showPage(currentPage);
+    }
 
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-            document.getElementById("popup-overlay").style.display = "none";
+    function closePopup() {
+        // 隱藏彈出視窗
+        document.getElementById('popup').style.display = 'none';
+    }
+
+    function showPage(index) {
+        // 隱藏所有頁面
+        pages.forEach((page, idx) => {
+            page.style.display = (index === idx) ? 'block' : 'none';
+        });
+    }
+
+    function prevPage() {
+        // 如果有上一頁，顯示上一頁
+        if (currentPage > 0) {
+            currentPage--;
+            showPage(currentPage);
         }
+    }
+
+    function nextPage() {
+        // 如果有下一頁，顯示下一頁
+        if (currentPage < pages.length - 1) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    }
 
         function resetPage() {
             document.querySelectorAll('input').forEach(input => input.value = '');
