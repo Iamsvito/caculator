@@ -250,7 +250,10 @@
                 個數是：<span id="score-count"></span><br />
                 中位數是：<span id="score-median"></span><br />
                 變異數是：<span id="score-variance"></span><br />
-                標準差是：<span id="score-standard-deviation"></span> <!-- 新增標準差的顯示 -->
+                標準差是：<span id="score-standard-deviation"></span><br />
+                A 類不確定度是：<span id="uncertainty-a"></span><br />
+                B 類不確定度是：<span id="uncertainty-b"></span><br />
+                輸入儀器最小刻度：<input type="number" id="instrument-resolution" value="1" step="any"><br />
             </div>
             <button id="scores-copy-button" class="copy-button">複製結果</button>
             <span id="scores-copy-message" style="display:none; color:green;">已複製!</span>
@@ -435,6 +438,17 @@
                 let variance = scores.reduce((acc, val) => acc + (val - average) ** 2, 0) / scores.length;
                 let standardDeviation = Math.sqrt(variance);
 
+                // **A 類不確定度計算**：u_A = s / √N
+                let uncertaintyA = standardDeviation / Math.sqrt(count);
+
+                // **B 類不確定度計算**：u_B = 儀器最小刻度 / (2√3)
+                let instrumentResolution = parseFloat(document.getElementById('instrument-resolution').value); // 從輸入框獲取儀器最小刻度
+                if (isNaN(instrumentResolution) || instrumentResolution <= 0) {
+                    alert("請輸入有效的儀器最小刻度！");
+                    return;  
+                    }// 停止計算，顯示錯誤訊息
+                let uncertaintyB = instrumentResolution / (2 * Math.sqrt(3));
+
                 scoreSumSpan.textContent = sum;
                 scoreAverageSpan.textContent = average.toFixed(2);
                 scoreMaxSpan.textContent = max;
@@ -443,10 +457,22 @@
                 scoreMedianSpan.textContent = median;
                 scoreVarianceSpan.textContent = variance.toFixed(2);
                 scoreStandardDeviationSpan.textContent = standardDeviation.toFixed(2); // 顯示標準差
+                document.getElementById('uncertainty-a').textContent = uncertaintyA.toFixed(2);
+                document.getElementById('uncertainty-b').textContent = uncertaintyB.toFixed(2);
             };
 
             const copyScoresResult = function () {
-                const result = `總分：${scoreSumSpan.textContent}\n平均分數：${scoreAverageSpan.textContent}\n最大分數：${scoreMaxSpan.textContent}\n最小分數：${scoreMinSpan.textContent}\n個數：${scoreCountSpan.textContent}\n中位數：${scoreMedianSpan.textContent}\n變異數：${scoreVarianceSpan.textContent}`;
+                const result = `總分：${scoreSumSpan.textContent}\n` +
+                               `平均分數：${scoreAverageSpan.textContent}\n` +
+                               `最大分數：${scoreMaxSpan.textContent}\n` +
+                               `最小分數：${scoreMinSpan.textContent}\n` +
+                               `個數：${scoreCountSpan.textContent}\n` +
+                               `中位數：${scoreMedianSpan.textContent}\n` +
+                               `變異數：${scoreVarianceSpan.textContent}\n` +
+                               `標準差：${scoreStandardDeviationSpan.textContent}\n` +
+                               `A 類不確定度：${document.getElementById('uncertainty-a').textContent}\n` +
+                               `B 類不確定度：${document.getElementById('uncertainty-b').textContent}`;
+
                 navigator.clipboard.writeText(result).then(() => {
                     const copyMessage = document.getElementById("scores-copy-message");
                     copyMessage.style.display = "inline";
@@ -457,6 +483,7 @@
                     console.error('複製失敗: ', err);
                 });
             };
+
 
             scoresInput.addEventListener("input", calculateScores);
             document.getElementById("scores-copy-button").addEventListener("click", copyScoresResult);
