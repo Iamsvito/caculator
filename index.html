@@ -238,8 +238,8 @@
             <h2>分數計算</h2>
             <form id="scores-form">
                 <div class="form-group">
-                    <label for="scores-string">請輸入分數列表，以半形逗號隔開：</label>
-                    <input id="scores-string" type="text" placeholder="例如 &quot;69,78,87,3993&quot;" />
+                    <label for="scores-string">請輸入分數列表，以半形分號隔開：</label>
+                    <input id="scores-string" type="text" placeholder="例如 &quot;69;78;87;39.93&quot;" />
                 </div>
             </form>
             <div class="result">
@@ -418,7 +418,7 @@
                 // 替換 π 為 Math.PI 並進行計算
                 let scores = replacePi(scoresInput.value)
                     .replace(/\be\b/g, Math.E)  // 將 e 替換為 Math.E 的數值
-                    .split(',')
+                    .split(';')
                     .map(str => parseFloat(str))  // 將字符串轉換為浮點數
                     .filter(n => !isNaN(n));      // 過濾掉無效的數字
 
